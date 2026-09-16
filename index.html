@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zion AI Policy Generator — governance policy templates</title>
+<meta name="description" content="Generate an AI governance policy skeleton mapped to EU AI Act, NIST AI RMF and ISO/IEC 42001 by industry and risk tier. Free tool by Zion Tech Group.">
+<style>
+:root{--bg:#0e0b16;--card:#1a1428;--acc:#f0abfc;--txt:#f3edfb;--mut:#b3a8cc}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
+header{padding:48px 24px 24px;text-align:center;background:linear-gradient(160deg,#33154d,#0e0b16)}
+h1{margin:0 0 8px}.wrap{max-width:920px;margin:0 auto;padding:24px}
+.panel{background:var(--card);border:1px solid #2d2144;border-radius:14px;padding:20px;margin-bottom:20px}
+label{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
+select,input{width:100%;padding:10px;border-radius:8px;border:1px solid #3a2d55;background:#140e22;color:var(--txt)}
+button.gen{margin-top:16px;padding:12px 22px;border:0;border-radius:10px;background:var(--acc);color:#1c0a26;font-weight:700;cursor:pointer}
+pre{white-space:pre-wrap;background:#120c1e;border:1px solid #2d2144;border-radius:12px;padding:18px;font-size:.85rem;max-height:480px;overflow:auto}
+footer{padding:32px 24px;text-align:center;color:var(--mut);font-size:.85rem;border-top:1px solid #241a38;margin-top:40px}
+footer a{color:var(--acc);text-decoration:none;margin:0 8px}
+</style>
+</head>
+<body>
+<header><h1>📜 Zion AI Governance Policy Generator</h1>
+<p>Generate a policy skeleton mapped to major AI frameworks. Starting point for legal review — not legal advice.</p></header>
+<div class="wrap">
+<div class="panel">
+<label>Organization name</label><input id="org" value="Your Company">
+<label>Industry</label><select id="ind"><option>General / SaaS</option><option>Healthcare</option><option>Financial services</option><option>Education</option><option>Government / public sector</option></select>
+<label>Framework(s)</label><select id="fw"><option>EU AI Act</option><option>NIST AI RMF</option><option>ISO/IEC 42001</option><option>All three</option></select>
+<label>Highest AI risk tier in scope</label><select id="risk"><option>Minimal</option><option>Limited</option><option>High</option></select>
+<button class="gen" onclick="gen()">Generate policy</button>
+</div>
+<div class="panel" id="result" style="display:none"><pre id="doc"></pre><button class="gen" onclick="dl()">Download .md</button></div>
+</div>
+<footer>Part of the <a href="https://ziontechgroup.com">Zion Tech Group</a> AI apps network ·
+<a href="https://ziontechgroup.com/zion-agent-stack-builder/">Agent Stack Builder</a>
+<a href="https://ziontechgroup.com/zion-vector-db-comparator/">Vector DB Comparator</a>
+<a href="https://ziontechgroup.com/zion-eval-generator/">Eval Generator</a>
+<a href="https://ziontechgroup.com/ai-cybersecurity-platform/">Zion security services</a></footer>
+<script>
+function gen(){
+const org=document.getElementById('org').value,ind=document.getElementById('ind').value,fw=document.getElementById('fw').value,risk=document.getElementById('risk').value;
+const d=`# AI Governance Policy — ${org}
+**Industry:** ${ind} | **Frameworks:** ${fw} | **Highest risk tier:** ${risk}
+**Generated:** ${new Date().toISOString().slice(0,10)} via Zion AI Policy Generator (template — requires legal review)
+
+## 1. Purpose & Scope
+This policy governs the development, procurement and operation of AI systems at ${org}.
+
+## 2. Roles & Accountability
+- **AI Governance Lead**: owns this policy, risk register, and review cadence.
+- **System Owners**: register each AI system before deployment; maintain documentation.
+- **Review Board**: approves ${risk==='High'?'ALL deployments (mandatory for high-risk tier)':'limited-risk and above deployments'}.
+
+## 3. AI System Inventory
+All AI systems (internal, vendor, embedded) must be registered with: purpose, data inputs, model/provider, risk tier, users affected.
+
+## 4. Risk Classification (${fw})
+${fw.includes('EU')||fw==='All three'?'- EU AI Act: prohibited practices banned; high-risk systems require conformity assessment, logging, human oversight.\n':''}${fw.includes('NIST')||fw==='All three'?'- NIST AI RMF: Map / Measure / Manage / Govern functions applied per system.\n':''}${fw.includes('ISO')||fw==='All three'?'- ISO/IEC 42001: AI management system (AIMS) with continuous improvement cycle.\n':''}
+## 5. Data & Privacy
+- Lawful basis documented per dataset; PII minimization; retention limits.
+${ind==='Healthcare'?'- HIPAA: PHI never sent to external models without BAA and de-identification review.\n':''}${ind==='Financial services'?'- Model risk management per SR 11-7-style guidance; audit trails for credit decisions.\n':''}
+## 6. Human Oversight
+- ${risk==='High'?'Mandatory human review before any consequential automated action.':'Human escalation path for contested outputs.'}
+
+## 7. Vendor & Model Management
+- Approved model/vendor list; contractual rights to audit; incident notification SLAs.
+
+## 8. Monitoring, Incidents & Evals
+- Continuous output monitoring; evals in CI; AI incident runbook; quarterly policy review.
+
+## 9. Training & Awareness
+- Annual AI literacy training for all staff interacting with AI systems (EU AI Act Art. 4 alignment).
+
+## 10. Enforcement
+Violations may result in system suspension and disciplinary action. Exceptions require Review Board approval.`;
+document.getElementById('doc').textContent=d;document.getElementById('result').style.display='block';window._doc=d;}
+function dl(){const b=new Blob([window._doc],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ai-governance-policy.md';a.click();}
+</script>
+</body>
+</html>
